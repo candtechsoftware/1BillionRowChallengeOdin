@@ -137,3 +137,40 @@ main :: proc() {
 
 }
 ```
+
+### Implementaion
+
+For the first go around, I am going to do the most simplest solution first just
+doing the work as I read it.
+
+```odin
+
+for line in strings.split_iterator(&s, "\n") {
+    if strings.trim_space(line) == "" {
+				break loop
+    }
+	parts := strings.split(line, ";")
+    if len(parts) < 2 {
+        break loop
+    }
+	name, temp_num := string(parts[0]), parts[1]
+	val, conv_ok := strconv.parse_f32(temp_num)
+	if !conv_ok {
+	    fmt.println("error parsing f32")
+    }
+	append(&names, name)
+	if temp, ok := info[name]; ok {
+	    temp.count += 1
+	    temp.min = math.min(temp.min, int(val))
+	    temp.max = math.max(temp.min, int(val))
+	    temp.sum += val
+	} else {
+	    temp_info := new(Temp_Info)
+	    temp_info.count = 1
+	    temp_info.min = int(val)
+	    temp_info.max = int(val)
+	    temp_info.sum = val
+		info[parts[0]] = temp_info
+    }
+}
+```
